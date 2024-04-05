@@ -11,8 +11,8 @@ mongoose
     .then(() => {
         console.log("MongoDb is connected");
     })
-    .catch((error) => {
-        console.log(error);
+    .catch((err) => {
+        console.log(err);
     });
 
 const app = express();
@@ -25,3 +25,13 @@ app.listen(3000, () => {
 
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server err";
+    res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message,
+    });
+});
